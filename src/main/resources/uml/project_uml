@@ -1,0 +1,150 @@
+@startuml
+class GameController
+
+abstract        FallingItem
+class           Bug
+class           Chocolate
+class           Grape
+class           Millipede
+class           Onion
+class           Slug
+class           Worm
+
+class           GamePanel
+class           Hedgehog
+interface       Visitor
+
+class           GameFrame
+
+FallingItem <|-- Bug
+FallingItem <|-- Chocolate
+FallingItem <|-- Grape
+FallingItem <|-- Millipede
+FallingItem <|-- Onion
+FallingItem <|-- Slug
+FallingItem <|-- Worm
+
+Visitor <|.left. Hedgehog
+
+GamePanel -up- GameFrame
+GameFrame -- GameController
+
+GamePanel -right- Hedgehog
+GamePanel -left- GameController
+
+GamePanel --- FallingItem
+GameController --- FallingItem
+
+class FallingItem {
+    - int x
+    - int y
+    - Image sprite
+    - boolean isActive
+
+    - FallingItem(int y)
+    - FallingItem()
+    - FallingItem(int x, int y, int speed, Image sprite)
+    + {abstract} void acceptCatchVisitor(Visitor visitor)
+    - int getRandomX()
+}
+
+class Bug {
+    - int bonus
+    + Bug(int offset)
+    + void acceptCatchVisitor(Visitor visitor)
+}
+
+class Chocolate {
+    + Chocolate(int offset)
+    + void acceptCatchVisitor(Visitor visitor)
+}
+
+class Grape {
+    - int negativeHealth
+    + Grape(int offset)
+    + void acceptCatchVisitor(Visitor visitor)
+}
+
+class Millipede {
+    - int bonus
+    - int positiveHealth
+    + Millipede(int offset)
+    + void acceptCatchVisitor(Visitor visitor)
+}
+
+class Onion {
+    - int negativeHealth
+    - int negativeSpeed
+    + Onion(int offset)
+    + void acceptCatchVisitor(Visitor visitor)
+}
+
+class Slug {
+    - int bonus
+    - int positiveSpeed
+    + Slug (int offset)
+    + void acceptCatchVisitor(Visitor visitor)
+}
+
+class Worm {
+    - int bonus
+    + Worm (int offset)
+    + void acceptCatchVisitor(Visitor visitor)
+}
+
+class GamePanel {
+    - Image background
+    - Hedgehog hedgehog
+    - GameController gameController
+    - final ArrayList<FallingItem> items
+    - final JLabel healthLabel
+    - final JLabel scoreLabel
+    - boolean isStarted
+    +GamePanel(GameController gameController)
+}
+
+class Hedgehog {
+    - Image hedgie
+    - int health
+    - String direction
+    - int speed
+    - int x
+    - int y
+    - int score
+    - boolean isDead
+
+    + Hedgehog()
+    + void setDirection()
+    - void loadImage()
+    + void killHedgie()
+}
+
+class GameFrame {
+    + {static} final int WIDTH
+    + {static} final int HEIGHT
+
+    + GameFrame()
+}
+
+interface Visitor {
+    + void visit (Bug bug)
+    + void visit (Worm worm)
+    + void visit (Slug slug)
+    + void visit (Millipede millipede)
+
+    + void visit (Grape grape)
+    + void visit (Onion onion)
+    + void visit (Chocolate chocolate)
+}
+
+class GameController {
+    - final ArrayList<FallingItem> items
+    + {static} boolean isFinished
+    - GamePanel panel
+    - final int THRESHOLD
+
+    + GameController()
+    + void run()
+}
+@enduml
+
